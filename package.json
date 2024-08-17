@@ -1,0 +1,19 @@
+{
+  "name": "pi-neopixel-2",
+  "version": "1.0.0",
+  "description": "A major upgrade to bean-frog/pi-neopixel",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "tailwind": "npx tailwindcss -o public/style.css --watch --minify"
+  },
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.19.2",
+    "os": "^0.1.2",
+    "path": "^0.12.7",
+    "piixel": "^1.1.1",
+    "tailwindcss": "^3.4.10"
+  }
+}
