@@ -17,9 +17,7 @@ Due to the fact that I'm using the same technologies and method, some of the cod
 - much more user friendly UI
 - config.json file for setup
 - more prebuilt animated sequences
-- support to create custom animations
 - animations are now non-blocking
-- Typescript maybe??
 
 ## Technologies used
 - NodeJS
