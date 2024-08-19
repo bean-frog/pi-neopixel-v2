@@ -14,16 +14,20 @@ Due to the fact that I'm using the same technologies and method, some of the cod
 ## What's new?
 - Custom network running on the Pi
 - Set all functions no longer spam the set single function (why tf did i think that was a good idea :skull:)
-- much more user friendly UI
+- more robust UI
 - config.json file for setup
 - more prebuilt animated sequences
+- more customization for animations
 - animations are now non-blocking
 
 ## Technologies used
+- HTML/Javascript
 - NodeJS
 - ExpressJS
-- React
-- TailwindCSS
+- Tailwind CSS
 - [piixel](https://github.com/bjoerge/piixel) library - WS281x Typescript bindings
 
+## dev/contributing info
+- Don't upgrade piixel in package.json - v1.1.1+ will start throwing a ton of errors
+- If you can fix above note, you can ignore it.
 

@@ -47,6 +47,16 @@ app.post('/setSingle', (req, res) => {
 		console.error("LED id out of range");
 		res.status(500).send("Selected LED is out of range.")
 	}
+});
+
+app.post('/setWhole', (req, res) => {
+    const color = req.body.color;
+    const {r, g, b} = color;
+    for (i = 0; i >= numLeds; i++) {
+        pixels[i] = (r << 8) | (g << 16) | b;
+    }
+    ws281x.render(pixels);
+    res.sendStatus(200);
 })
 
 
