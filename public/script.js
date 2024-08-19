@@ -29,13 +29,13 @@ function setWholeStrip() {
     })
 };
 
-function setSingleLed(lednum) {
+function setSingleLed(lednum, color) {
     fetch('/setSingle', {
         method: "POST",
         headers: {
             'Content-Type': 'application/json'
         },
-        body: JSON.stringify(singleLedColor)
+        body: JSON.stringify({led: lednum, color: color})
     })
     .then(response => {
         if (!response.ok) {

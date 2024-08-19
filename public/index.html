@@ -43,9 +43,9 @@
                     <h1 class="text-lg text-white">Color:</h1>
                     <input type="color" class="w-6 h-6 border border-white border-solid" id="single-display"></input>
                     <h1 class="text-lg text-white">LED ID:</h1>
-                    <input type="number" value="0" class="w-10 text-white bg-black">
-                    <button class="text-white btn btn-sm">Apply</button>
-                    <button class="text-white btn btn-sm">Clear LED</button>
+                    <input id="ledId" type="number" value="0" class="w-10 text-white bg-black">
+                    <button class="text-white btn btn-sm" onclick="setSingleLed(document.getElementById('ledId').value, singleLedColor)">Apply</button>
+                    <button class="text-white btn btn-sm" onclick="setSingleLed(document.getElementById('ledId').value, {r: 0, g: 0, b: 0})">Clear LED</button>
                 </div>
                
         </div>
