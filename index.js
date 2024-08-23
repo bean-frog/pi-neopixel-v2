@@ -1,7 +1,7 @@
 //--------------//
 // dependencies //
 //--------------//
-const { colorwheel, StripType, ws281x } = require('piixel');
+ const { colorwheel, StripType, ws281x } = require('piixel'); // comment this line out for development when not on a Pi
 const express = require('express');
 const path = require('path');
 const os = require('os');
@@ -14,6 +14,11 @@ const settings = require('./setup/config.json');
 const numLeds = settings.number_of_leds;
 const port = settings.server_port;
 const gpioDataPin = settings.gpio_data_pin
+const pixels = new Uint32Array(numLeds);
+
+// piixel conf
+
+// comment this thing out for development when not on a Pi
 
 ws281x.configure(
 	{
@@ -24,6 +29,9 @@ ws281x.configure(
 	}
 );
 
+
+
+// server conf
 const app = express();
 const publicPath = path.join(__dirname, 'public');
 app.use(express.static(publicPath));
@@ -33,8 +41,11 @@ app.get('/', (req, res) => {
 app.use(express.json());
 
 
-const pixels = new Uint32Array(numLeds);
+//
+// Endpoints for color setting
+//
 
+// single led
 app.post('/setSingle', (req, res) => {
 	const color = req.body.color;
 	const led = req.body.led;
@@ -49,6 +60,7 @@ app.post('/setSingle', (req, res) => {
 	}
 });
 
+// whole strip
 app.post('/setWhole', (req, res) => {
     const color = req.body.color;
     const {r, g, b} = color;
@@ -58,6 +70,15 @@ app.post('/setWhole', (req, res) => {
     ws281x.render(pixels);
     res.sendStatus(200);
 })
+
+// custom flow
+app.post('/setCustomColorFlow', (req, res) => {
+    console.log(req.body.colors)
+    res.sendStatus(200)
+})
+
+
+
 
 
 // Start Express server
@@ -79,12 +100,14 @@ app.listen(port, () => {
     }
 });
 
-//------------//
-// main stuff //
-//------------//
-
-// allow frontend to access number of leds (defined in config.json)
-app.get("/numLeds", (req, res) => { 
-    res.send(numLeds.toString());
+// connection test endpoint
+app.get("/ping", (req, res) => {
+    res.status(200).send('Pong! Connection Successful!')
 });
+// expose number of leds
+app.get("/numLeds", (req, res) => { 
+    res.status(200).send(numLeds.toString());
+});
+
+
 

@@ -9,6 +9,7 @@
 <body class="h-screen w-screen bg-[#010203]">
     <div class="flex flex-col justify-center items-center p-4 w-full h-1/5 border-2 border-white border-solid">
         <h1 class="text-3xl font-bold text-white">Neopixel Controller V2</h1>
+        <h1 class="text-lg text-white" id="connStatus"></h1>
         <h1 class="text-lg text-white">Number of available LEDs: <span class="font-bold" id="numLeds"></span></h1>
     </div>
     <div class="flex flex-row w-full h-4/5 border-2 border-white border-solid">
@@ -25,8 +26,8 @@
                 <div class="flex flex-row gap-4 justify-center items-center mt-2">
                     <h1 class="text-lg text-white">Color:</h1>
                     <input type="color" class="w-6 h-6 border border-white border-solid" id="whole-display"></input>
-                    <button class="text-white btn btn-sm">Apply</button>
-                    <button class="text-white btn btn-sm">Clear Strip</button>
+                    <button class="text-white btn btn-sm" onclick="setWholeStrip(wholeStripColor)">Apply</button>
+                    <button class="text-white btn btn-sm" onclick="setWholeStrip({r: 0, g: 0, b: 0})">Clear Strip</button>
                 </div>
                
         </div>
@@ -62,8 +63,7 @@
                     <input id="rainbow-speed" type="range" min="0" max="255" value="255" class="range" />
                     <span class="flex flex-row mt-2 space-x-2">
                         <button class="text-white btn btn-sm">Apply</button>
-                        <button class="text-white btn btn-sm">Stop Animation</button>
-                        <button class="text-white btn btn-sm">Clear Strip</button>
+                        <button class="text-white btn btn-sm">Clear</button>
                     </span>
                 </div>
             </div>
@@ -96,13 +96,10 @@
                     <input id="rainbow-speed" type="range" min="0" max="255" value="255" class="range" />
                     <span class="flex flex-row items-center">
                         <h1 class="text-lg text-white">Colors:</h1>
-                        <button class="m-2 text-white btn btn-sm">Add</button>
+                        <button id="addCustomColor" class="m-2 text-white btn btn-sm">Add</button>
                     </span>
-                    <div class="flex overflow-x-scroll flex-grow p-2 h-14 rounded-md border-2 border-white border-solid overflow-y-clip">
-                        <span class="flex flex-row items-center m-2">
-                            <input type="color" class="w-6 h-6">
-                            <button>&times;</button>
-                        </span>
+                    <div id="customColorTray" class="flex overflow-x-scroll flex-grow p-2 h-14 rounded-md border-2 border-white border-solid overflow-y-clip">
+                       
                     </div>
 
                     <span class="flex flex-row mt-2 space-x-2">

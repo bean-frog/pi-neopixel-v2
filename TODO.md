@@ -1,0 +1,2 @@
+- index.js - Check if running on a Pi or not, send different status code on reqs to /ping if not
+- public/script.js - display something if above sends a different status

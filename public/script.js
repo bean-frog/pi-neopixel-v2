@@ -1,5 +1,6 @@
 // Neopixel Controller V2 frontend script
 // (c) 2024 beanfrog 
+// MIT License
 
 //====>
 // Variables that may or may not make sense to have here
@@ -7,17 +8,20 @@
 let wholeStripColor = {r: 255, g: 255, b:255};
 let singleLedColor = {r: 255, g: 255, b:255};
 
-//====>
-// HTTP Request functions
-//====>
+let customColors = {};
+let customColorIndex = 0;
 
-function setWholeStrip() {
+// ====>
+// HTTP Request functions
+// ====>
+
+function setWholeStrip(color) {
     fetch('/setWhole', {
         method: "POST",
         headers: {
             'Content-Type': 'application/json'
         },
-        body: JSON.stringify(wholeStripColor)
+        body: JSON.stringify(color)
     })
     .then(response => {
         if (!response.ok) {
@@ -43,10 +47,27 @@ function setSingleLed(lednum, color) {
         }
     })
     .catch(error => {
-        console.error("Error: " + error)
+        console.error(join("Error: ", error))
     })
 };
 
+function setCustomColorFlow(colors) {
+    fetch('/setCustomColorFlow', {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({colors: colors})
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error("Error sending custom color flow data to server. response: "+ response)
+        }
+    })
+    .catch(error => {
+        console.error("Error: " + error)
+    })
+}
 
 //====>
 // Helper Functions
@@ -98,6 +119,17 @@ function hexToRgb(hex) {
 // UI Stuff
 //====>
 
+// ping server on load (idk)
+document.addEventListener("DOMContentLoaded", async function() {
+   const status = await fetch("/ping");
+   if (!status.ok) {
+    throw new Error("Ping to local server failed. This should only appear if you're using a different http server for development.")
+   } else {
+    document.getElementById("connStatus").innerHTML = "Connected 🟢"
+   }
+   
+})
+
 // whole strip color sliders and color selector
 document.getElementById('whole-strip-color-sliders').addEventListener('input', function(event) {
     if (event.target.matches('input[type="range"]')) {
@@ -140,4 +172,42 @@ document.getElementById('single-display').addEventListener('input', function(eve
     singleLedColor = {r: red, g: green, b: blue} //globally accessible single led color value
 });
 
+// custom colors management stuff
+
+// might switch this to use createElement because it doesnt invoke the html parser but this works for now
+const colorOptionTemplate = `
+            <span class="flex flex-row items-center m-2">
+                <input type="color" class="cci w-6 h-6">
+                <button onclick="removeColor(this.parentElement)">&times;</button>
+            </span>
+        `;
+
+        function updateCustomColors() {
+            const colorElements = document.querySelectorAll('.cci');
+            customColors = {}; // Reset customColors
+            colorElements.forEach((input, index) => {
+                const colorValue = input.value;
+                // console.log(`Color Value: ${colorValue}`);
+                const [ r, g, b ] = hexToRgb(colorValue);
+                // console.log(`RGB Values: r=${r}, g=${g}, b=${b}`);
+                customColors[index] = { r, g, b }; 
+            });
+            console.log(customColors)
+        }
+
+        function removeColor(element) {
+            element.remove();
+            updateCustomColors();
+        }
+
+        function addColor() {
+            document.getElementById("customColorTray").insertAdjacentHTML('beforeend', colorOptionTemplate);
+            const newColorInput = document.querySelector('#customColorTray input[type="color"]:last-of-type');
+            newColorInput.addEventListener('change', () => {
+                updateCustomColors();
+            });
+            updateCustomColors();
+        }
+document.getElementById("addCustomColor").addEventListener("click", addColor);
+ 
 
