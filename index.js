@@ -75,7 +75,9 @@ app.post('/setWhole', (req, res) => {
 app.post('/setCustomColorFlow', (req, res) => {
     console.log(req.body.colors)
     res.sendStatus(200)
-})
+});
+
+
 
 
 

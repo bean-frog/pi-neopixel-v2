@@ -10,6 +10,13 @@ let singleLedColor = {r: 255, g: 255, b:255};
 
 let customColors = {};
 let customColorIndex = 0;
+let customColorSpeed = 10;
+
+let rainbowSettings = {speed: 10, width: 5};
+
+let policeSettings = {speed: 10, extra: {includeOrange: false, extraFlashes: false}};
+
+let marqueeSettings = {speed: 10, color:{r: 255, g: 0, b: 0}};
 
 // ====>
 // HTTP Request functions
@@ -57,7 +64,7 @@ function setCustomColorFlow(colors) {
         headers: {
             "Content-Type": "application/json"
         },
-        body: JSON.stringify({colors: colors})
+        body: JSON.stringify({speed: customColorSpeed, colors: colors})
     })
     .then(response => {
         if (!response.ok) {
@@ -66,6 +73,62 @@ function setCustomColorFlow(colors) {
     })
     .catch(error => {
         console.error("Error: " + error)
+    })
+};
+
+// currently untested
+function setRainbow() {
+    fetch('/setRainbow', {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({options: rainbowSettings})
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error("Error sending rainbow data to server. response: " + response)
+        }
+    })
+    .catch(error => {
+        console.error("Error: " + error);
+    })
+};
+// currently untested
+function setPolice() {
+    fetch("/setPolice", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({options: policeSettings})
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Error sending police light data to server. response: ' + response);
+        }
+    })
+    .catch(error => {
+        console.error("Error: " + error);
+    })
+}
+
+//currently untested
+function setMarquee() {
+    fetch('/setMarquee', {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({options: marqueeSettings})
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error("Error sending marquee data to server. response: " + response);
+        }
+    })
+    .catch(error => {
+        console.error("Error: " + error);
     })
 }
 
@@ -127,7 +190,6 @@ document.addEventListener("DOMContentLoaded", async function() {
    } else {
     document.getElementById("connStatus").innerHTML = "Connected 🟢"
    }
-   
 })
 
 // whole strip color sliders and color selector
