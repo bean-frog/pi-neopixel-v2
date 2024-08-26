@@ -24,8 +24,9 @@ function verboselog(message) {
 }
 // string -> colored string (ANSI escape code)
 function colortext(color, text) {
-	const {r, g, b} = colorl
-	//todo
+    const { r, g, b } = color;
+    // ANSI escape code format for RGB color: \x1b[38;2;{r};{g};{b}m
+    return `\x1b[38;2;${r};${g};${b}m${text}\x1b[0m`;
 }
 
 // piixel conf
