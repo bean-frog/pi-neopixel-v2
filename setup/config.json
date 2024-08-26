@@ -1,5 +1,6 @@
 {
         "server_port": 3001,
-        "number_of_leds": 10,
-        "gpio_data_pin": 18
+        "number_of_leds": 36,
+        "gpio_data_pin": 18,
+        "verbose_logging": true
 }

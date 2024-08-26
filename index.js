@@ -1,7 +1,7 @@
 //--------------//
 // dependencies //
 //--------------//
- const { colorwheel, StripType, ws281x } = require('piixel'); // comment this line out for development when not on a Pi
+const { colorwheel, StripType, ws281x } = require('piixel'); // comment this line out for development when not on a Pi
 const express = require('express');
 const path = require('path');
 const os = require('os');
@@ -13,13 +13,23 @@ const settings = require('./setup/config.json');
 
 const numLeds = settings.number_of_leds;
 const port = settings.server_port;
-const gpioDataPin = settings.gpio_data_pin
-const pixels = new Uint32Array(numLeds);
+const gpioDataPin = settings.gpio_data_pin;
+const verboseLoggingEnabled = settings.verbose_logging;
+
+// verbose logging
+function verboselog(message) {
+	if (verboseLoggingEnabled) {
+		console.log(message)
+	}
+}
+// string -> colored string (ANSI escape code)
+function colortext(color, text) {
+	const {r, g, b} = colorl
+	//todo
+}
 
 // piixel conf
-
 // comment this thing out for development when not on a Pi
-
 ws281x.configure(
 	{
 		gpio: gpioDataPin,
@@ -29,6 +39,7 @@ ws281x.configure(
 	}
 );
 
+const pixels = new Uint32Array(numLeds);
 
 
 // server conf
@@ -62,12 +73,16 @@ app.post('/setSingle', (req, res) => {
 
 // whole strip
 app.post('/setWhole', (req, res) => {
-    const color = req.body.color;
-    const {r, g, b} = color;
-    for (i = 0; i >= numLeds; i++) {
+
+    const color = req.body
+
+   const {r, g, b} = color;
+   console.log(color)
+    for (i = 0; i < numLeds; i++) {
         pixels[i] = (r << 8) | (g << 16) | b;
     }
-    ws281x.render(pixels);
+   
+    ws281x.render(pixels)
     res.sendStatus(200);
 })
 
@@ -76,12 +91,6 @@ app.post('/setCustomColorFlow', (req, res) => {
     console.log(req.body.colors)
     res.sendStatus(200)
 });
-
-
-
-
-
-
 
 // Start Express server
 app.listen(port, () => {
