@@ -271,5 +271,8 @@ const colorOptionTemplate = `
             updateCustomColors();
         }
 document.getElementById("addCustomColor").addEventListener("click", addColor);
- 
+
+ document.getElementById("rainbow-speed").addEventListener('input', function() {
+ 	rainbowSettings.speed = this.value;
+ })
 

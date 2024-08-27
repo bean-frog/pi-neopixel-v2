@@ -25,7 +25,7 @@ Due to the fact that I'm using the same technologies and method, some of the cod
 - NodeJS
 - ExpressJS
 - Tailwind CSS
-- [piixel](https://github.com/bjoerge/piixel) library - WS281x Typescript bindings
+- [piixel](https://github.com/bjoerge/piixel) library - WS281x Typescript binding
 
 ## dev/contributing info
 - Don't upgrade piixel in package.json - v1.1.1+ will start throwing a ton of errors
