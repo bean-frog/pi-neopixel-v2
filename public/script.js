@@ -184,11 +184,14 @@ function hexToRgb(hex) {
 
 // ping server on load (idk)
 document.addEventListener("DOMContentLoaded", async function() {
-   const status = await fetch("/ping");
-   if (!status.ok) {
-    throw new Error("Ping to local server failed. This should only appear if you're using a different http server for development.")
-   } else {
-    document.getElementById("connStatus").innerHTML = "Connected 🟢"
+   const response = await fetch("/ping");
+   let status = response.status;
+   if (status === 200) {
+    document.getElementById("connStatus").innerHTML = "Connected 🟢";
+   }
+   if (status === 202) {
+    window.alert("The server appears to not be running on a Raspberry Pi. This is okay for development.");
+    document.getElementById("connStatus").innerHTML = "Server not running on a Pi 🟡"
    }
 })
 

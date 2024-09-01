@@ -10,6 +10,7 @@ const { colorwheel, StripType, ws281x } = require('piixel'); // comment this lin
 const express = require('express');
 const path = require('path');
 const os = require('os');
+const fs = require("fs");
 const settings = require('./setup/config.json');
 
 //------------//
@@ -32,19 +33,19 @@ let customFlowInterval;
 function killAnimations() {
 	if (rainbowInterval) {
 		clearInterval(rainbowInterval);
-		verboselog(colortext({r:255,g:0,b:0}, "Killed ") + "rainbow animation")
+		verboselog(colortext({r:255,g:0,b:0}, "Killed ") + "rainbow animation");
 	}
 	if (policeInterval) {
-			clearInterval(policeInterval);
-			verboselog(colortext({r:255,g:0,b:0}, "Killed ") + "police animation")
+		clearInterval(policeInterval);
+		verboselog(colortext({r:255,g:0,b:0}, "Killed ") + "police animation");
 	}
 	if (marqueeInterval) {
-			clearInterval(marqueeInterval);
-			verboselog(colortext({r:255,g:0,b:0}, "Killed ") + "marquee animation")
+		clearInterval(marqueeInterval);
+		verboselog(colortext({r:255,g:0,b:0}, "Killed ") + "marquee animation");
 	}
 	if (customFlowInterval) {
-			clearInterval(customFlowInterval);
-			verboselog(colortext({r:255,g:0,b:0}, "Killed ") + "color flow animation")
+		clearInterval(customFlowInterval);
+		verboselog(colortext({r:255,g:0,b:0}, "Killed ") + "color flow animation");
 	}
 }
 
@@ -82,6 +83,7 @@ app.use(express.static(publicPath));
 app.get('/', (req, res) => {
 	res.sendFile(path.join(publicPath, 'index.html'))
 });
+
 //make config accessible to frontend
 app.get('/config', (req, res) => {
 	res.json(settings)
@@ -169,7 +171,20 @@ app.listen(port, () => {
 
 // connection test endpoint
 app.get("/ping", (req, res) => {
-    res.status(200).send('Pong! Connection Successful!')
+	// TODO: This is UNTESTED <<<<<<<<<<<<<<<<<<<<
+	// read proc/cpuinfo to determine if running on a Pi
+	
+	fs.readFile('/proc/cpuinfo', 'utf8', (err, data) => {
+		if (err) {
+			console.log(colortext({r:255,g:0,b:0}, "Error ") + "reading /proc/cpuinfo:");
+			console.log(err);
+		}
+		if (data.includes("Pi")) {
+			res.status(200).send('Pong! Connection Successful!');
+		} else {
+			res.status(202).send("Server is working, but should be running on a Raspberry Pi");
+		}
+	});
 });
 // expose number of leds
 app.get("/numLeds", (req, res) => { 
