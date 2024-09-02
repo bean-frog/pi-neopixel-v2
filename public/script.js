@@ -14,7 +14,7 @@ let customColorSpeed = 10;
 
 let rainbowSettings = {speed: 10, width: 5};
 
-let policeSettings = {speed: 10, extra: {includeOrange: false, extraFlashes: false}};
+let policeSettings = {speed: 5, extra: {includeOrange: false, extraFlashes: false}};
 
 let marqueeSettings = {speed: 10, color:{r: 255, g: 0, b: 0}};
 
@@ -182,7 +182,7 @@ function hexToRgb(hex) {
 // UI Stuff
 //====>
 
-// ping server on load (idk)
+// ping server on load 
 document.addEventListener("DOMContentLoaded", async function() {
    const response = await fetch("/ping");
    let status = response.status;
@@ -277,5 +277,27 @@ document.getElementById("addCustomColor").addEventListener("click", addColor);
 
  document.getElementById("rainbow-speed").addEventListener('input', function() {
  	rainbowSettings.speed = this.value;
+ });
+  document.getElementById("rainbow-width").addEventListener('input', function() {
+ 	rainbowSettings.width = this.value;
+ })
+
+ //police settings
+  document.getElementById("police-speed").addEventListener('input', function() {
+ 	policeSettings.speed = this.value;
+ });
+   document.getElementById("police-orange").addEventListener('input', function() {
+ 	if (this.checked) {
+ 		policeSettings.extra.includeOrange = true;
+ 	} else {
+ 		policeSettings.extra.includeOrange = false;
+ 	}
+ })
+   document.getElementById("police-flashes").addEventListener('input', function() {
+ 	if (this.checked) {
+ 	 		policeSettings.extra.extraFlashes = true;
+ 	 	} else {
+ 	 		policeSettings.extra.extraFlashes = false;
+ 	 	}
  })
 

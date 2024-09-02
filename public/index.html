@@ -58,12 +58,12 @@
                 <h1 class="mb-2 text-xl text-white">Rainbow Animated</h1>
                 <div id="rainbow-options">
                     <h1 class="text-lg text-white">Speed:</h1>
-                    <input id="rainbow-speed" type="range" min="0" max="20" value="20" class="range" />
+                    <input style="direction:rtl" id="rainbow-speed" type="range" min="1" max="20" value="20" class="range" />
                     <h1 class="text-lg text-white">Width:</h1>
-                    <input id="rainbow-width" type="range" min="0" max="255" value="255" class="range" />
+                    <input id="rainbow-width" type="range" min="1" max="10" value="3" class="range" />
                     <span class="flex flex-row mt-2 space-x-2">
                         <button onclick="setRainbow()" class="text-white btn btn-sm">Apply</button>
-                        <button class="text-white btn btn-sm">Clear</button>
+                        <button onclick="setWhole({r:0,g:0,b:0})"class="text-white btn btn-sm">Clear</button>
                     </span>
                 </div>
             </div>
@@ -72,19 +72,19 @@
                 <h1 class="mb-2 text-xl text-white">Police Lights Animated</h1>
                 <div id="police-options">
                     <h1 class="text-lg text-white">Speed:</h1>
-                    <input id="rainbow-speed" type="range" min="0" max="255" value="255" class="range" />
+                    <!--https://stackoverflow.com/questions/40275891/how-to-reverse-the-direction-in-html5-range-input -->
+                    <input style="direction: rtl" id="police-speed" type="range" min="1" max="10" value="5" class="range" />
                     <span class="flex flex-row items-center space-x-2">
                         <h1 class="text-lg text-white">Include Orange Lights:</h1>
-                        <input type="checkbox" class="checkbox" />
+                        <input id="police-orange" type="checkbox" class="checkbox" />
                     </span>
                     <span class="flex flex-row items-center space-x-2">
                         <h1 class="text-lg text-white">Extra Flashes:</h1>
-                        <input type="checkbox" class="checkbox" />
+                        <input id="police-flashes" type="checkbox" class="checkbox" />
                     </span>
                     <span class="flex flex-row mt-2 space-x-2">
-                        <button class="text-white btn btn-sm">Apply</button>
-                        <button class="text-white btn btn-sm">Stop Animation</button>
-                        <button class="text-white btn btn-sm">Clear Strip</button>
+                        <button onclick="setPolice()" class="text-white btn btn-sm">Apply</button>
+                        <button onclick="setWholeStrip({r:0,g:0,b:0})" class="text-white btn btn-sm">Clear</button>
                     </span>
                 </div>
             </div>
@@ -103,9 +103,8 @@
                     </div>
 
                     <span class="flex flex-row mt-2 space-x-2">
-                        <button class="text-white btn btn-sm">Apply</button>
-                        <button class="text-white btn btn-sm">Stop Animation</button>
-                        <button class="text-white btn btn-sm">Clear Strip</button>
+                        <button onclick="setCustomColorFlow()" class="text-white btn btn-sm">Apply</button>
+                        <button onclick="setWhole({r:0,g:0,b:0})" class="text-white btn btn-sm">Clear Strip</button>
                     </span>
                 </div>
             </div>
@@ -120,9 +119,8 @@
                     <input type="color" class="w-6 h-6 border border-white border-solid" id="single-display"></input>
                         </span>
                     <span class="flex flex-row mt-2 space-x-2">
-                        <button class="text-white btn btn-sm">Apply</button>
-                        <button class="text-white btn btn-sm">Stop Animation</button>
-                        <button class="text-white btn btn-sm">Clear Strip</button>
+                        <button onclick="setMarquee()" class="text-white btn btn-sm">Apply</button>
+                        <button onclick="setWhole({r:0,g:0,b:0})" class="text-white btn btn-sm">Clear Strip</button>
                     </span>
                 </div>
             </div>

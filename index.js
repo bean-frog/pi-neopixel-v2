@@ -33,18 +33,22 @@ let customFlowInterval;
 function killAnimations() {
 	if (rainbowInterval) {
 		clearInterval(rainbowInterval);
+		rainbowInterval = null;
 		verboselog(colortext({r:255,g:0,b:0}, "Killed ") + "rainbow animation");
 	}
 	if (policeInterval) {
 		clearInterval(policeInterval);
+		policeInterval = null;
 		verboselog(colortext({r:255,g:0,b:0}, "Killed ") + "police animation");
 	}
 	if (marqueeInterval) {
 		clearInterval(marqueeInterval);
+		marqueeInterval = null;
 		verboselog(colortext({r:255,g:0,b:0}, "Killed ") + "marquee animation");
 	}
 	if (customFlowInterval) {
 		clearInterval(customFlowInterval);
+		customFlowInterval = null;
 		verboselog(colortext({r:255,g:0,b:0}, "Killed ") + "color flow animation");
 	}
 }
@@ -129,14 +133,38 @@ app.post('/setCustomColorFlow', (req, res) => {
     res.sendStatus(200)
 });
 
+// police lights
+app.post('/setPolice', (req, res) => {
+killAnimations();
+	const half = Math.floor(numLeds / 2);
+	const speed = req.body.options.speed;
+	const {includeOrange, extraFlashes} = req.body.options.extra;
+	let isRedFirst = true;
+	policeInterval = setInterval(() => {
+			for (let i = 0; i < numLeds; i++) {
+		if (i < half) {
+			pixels[i] = isRedFirst ? 0x00FF00 : 0x0000FF; // even though the strip is set as RGB, for these hexes we have to use GRB. idk why
+		} else {
+			pixels[i] = isRedFirst ? 0x0000FF : 0x00FF00;
+		}
+	}
+	ws281x.render(pixels);
+	isRedFirst = !isRedFirst;
+	}, speed * 100)
+
+// 
+    verboselog(colortext({r:0,g:255,b:0}, "Started: ") + `police animation with speed ${speed}, ` + (extraFlashes ? "" : "no ") + "extra flashes, and " + (includeOrange ? "" : "no ") + "orange lights.")
+    res.sendStatus(200)
+});
 app.post('/setRainbow', (req, res) => {
 killAnimations();
 	const {speed, width} = req.body.options;
 	let offset = 0;
 	function rainbowLoop() {
-		offset++
+	offset++
 		for (let i = 0; i < numLeds; i++) {
-			pixels[i] = colorwheel((i * numLeds + offset) % 255)
+		const colorIndex = Math.floor((i * numLeds / width + offset) % 255)
+		pixels[i] = colorwheel(colorIndex)
 		}
 		ws281x.render(pixels)
 	}
@@ -162,6 +190,8 @@ app.listen(port, () => {
     if (localIp != null) {
         console.log(`Access on network: http://${localIp}:${port}`);
     }
+    verboselog("\nVerbose logging enabled!");
+    verboselog("NOTE: Speed values are inverted (i.e. 10 is slower than 1)")
 });
 
 
