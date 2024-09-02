@@ -135,24 +135,53 @@ app.post('/setCustomColorFlow', (req, res) => {
 
 // police lights
 app.post('/setPolice', (req, res) => {
-killAnimations();
-	const half = Math.floor(numLeds / 2);
-	const speed = req.body.options.speed;
-	const {includeOrange, extraFlashes} = req.body.options.extra;
-	let isRedFirst = true;
-	policeInterval = setInterval(() => {
-			for (let i = 0; i < numLeds; i++) {
-		if (i < half) {
-			pixels[i] = isRedFirst ? 0x00FF00 : 0x0000FF; // even though the strip is set as RGB, for these hexes we have to use GRB. idk why
-		} else {
-			pixels[i] = isRedFirst ? 0x0000FF : 0x00FF00;
-		}
-	}
-	ws281x.render(pixels);
-	isRedFirst = !isRedFirst;
-	}, speed * 100)
+    killAnimations();
+    const half = Math.floor(numLeds / 2);
+    const speed = req.body.options.speed;
+    const { includeOrange, extraFlashes } = req.body.options.extra;
+    let isRedFirst = true;
 
-// 
+    policeInterval = setInterval(() => {
+        // Set the initial color for each side
+        for (let i = 0; i < numLeds; i++) {
+            if (i < half) {
+                pixels[i] = isRedFirst ? 0x00FF00 : 0x0000FF; // Green or Blue
+            } else {
+                pixels[i] = isRedFirst ? 0x0000FF : 0x00FF00; // Blue or Green
+            }
+        }
+        ws281x.render(pixels);
+
+        if (extraFlashes) {
+            const flashColor = isRedFirst ? 0x00FF00 : 0x0000FF; // Set flash color based on current side
+            const lowBrightness = flashColor >> 1 & 0x7F7F7F; // Calculate mid brightness
+            for (let flash = 0; flash < 2; flash++) {
+                // Flash one side from mid brightness to high brightness twice
+                for (let i = 0; i < half; i++) {
+                    if (isRedFirst) {
+                        pixels[i] = lowBrightness;
+                    } else {
+                        pixels[i + half] = lowBrightness;
+                    }
+                }
+                ws281x.render(pixels);
+
+                setTimeout(() => {
+                    for (let i = 0; i < half; i++) {
+                        if (isRedFirst) {
+                            pixels[i] = flashColor;
+                        } else {
+                            pixels[i + half] = flashColor;
+                        }
+                    }
+                    ws281x.render(pixels);
+                }, speed * 50);
+            }
+        }
+
+        isRedFirst = !isRedFirst; // Switch sides
+    }, speed * 100);
+
     verboselog(colortext({r:0,g:255,b:0}, "Started: ") + `police animation with speed ${speed}, ` + (extraFlashes ? "" : "no ") + "extra flashes, and " + (includeOrange ? "" : "no ") + "orange lights.")
     res.sendStatus(200)
 });
