@@ -26,6 +26,7 @@ const verboseLoggingEnabled = settings.verbose_logging;
 // animation intervals
 let rainbowInterval;
 let policeInterval;
+let flashInterval;
 let marqueeInterval;
 let customFlowInterval;
 
@@ -39,6 +40,10 @@ function killAnimations() {
 	if (policeInterval) {
 		clearInterval(policeInterval);
 		policeInterval = null;
+		if (flashInterval) {
+			clearInterval(flashInterval);
+			flashInterval = null;
+		}
 		verboselog(colortext({r:255,g:0,b:0}, "Killed ") + "police animation");
 	}
 	if (marqueeInterval) {
@@ -88,10 +93,6 @@ app.get('/', (req, res) => {
 	res.sendFile(path.join(publicPath, 'index.html'))
 });
 
-//make config accessible to frontend
-app.get('/config', (req, res) => {
-	res.json(settings)
-})
 
 //
 // Endpoints for color setting
@@ -142,37 +143,18 @@ app.post('/setPolice', (req, res) => {
     let isRedFirst = true;
     let isFlashing = true;
 
-    // Main police interval (alternates between red first and blue first)
     policeInterval = setInterval(() => {
-        if (extraFlashes) {
-            // Flashing logic: set up a separate interval for flashing behavior
-            flashInterval = setInterval(() => {
-                for (let i = 0; i < numLeds; i++) {
-                    if (i < half) {
-                        // Left side
-                        pixels[i] = isFlashing ? 0x00FF00 : 0x000000; // Red or black (off)
-                    } else {
-                        // Right side
-                        pixels[i] = isFlashing ? 0x000000 : 0x0000FF; // Black (off) or blue
-                    }
-                }
-                ws281x.render(pixels);
-                isFlashing = !isFlashing; // Toggle flashing state
-            }, 100); // Flash interval is 100ms
-        } else {
-            // Normal police lights without extra flashes
             for (let i = 0; i < numLeds; i++) {
                 if (i < half) {
-                    pixels[i] = isRedFirst ? 0x00FF00 : 0x0000FF; // Alternating between red and blue
+                    pixels[i] = isRedFirst ? 0x00FF00 : 0x0000FF; 
                 } else {
                     pixels[i] = isRedFirst ? 0x0000FF : 0x00FF00;
                 }
             }
             ws281x.render(pixels);
-        }
-        isRedFirst = !isRedFirst; // Toggle red/blue first
-    }, speed * 100);
-    verboselog(colortext({r:0,g:255,b:0}, "Started: ") + `police animation with speed ${speed}, ` + (extraFlashes ? "" : "no ") + "extra flashes, and " + (includeOrange ? "" : "no ") + "orange lights.")
+            isRedFirst = !isRedFirst;
+        }, speed * 100)
+    verboselog(colortext({r:0,g:255,b:0}, "Started ") + `police animation with speed ${speed}, ` + (extraFlashes ? "" : "no ") + "extra flashes, and " + (includeOrange ? "" : "no ") + "orange lights.")
     res.sendStatus(200)
 });
 app.post('/setRainbow', (req, res) => {
@@ -220,18 +202,18 @@ app.listen(port, () => {
 
 // connection test endpoint
 app.get("/ping", (req, res) => {
-	// TODO: This is UNTESTED <<<<<<<<<<<<<<<<<<<<
 	// read proc/cpuinfo to determine if running on a Pi
 	
 	fs.readFile('/proc/cpuinfo', 'utf8', (err, data) => {
 		if (err) {
 			console.log(colortext({r:255,g:0,b:0}, "Error ") + "reading /proc/cpuinfo:");
 			console.log(err);
+			res.status(500).send("Couldn't read /proc/cpuinfo")
 		}
 		if (data.includes("Pi")) {
 			res.status(200).send('Pong! Connection Successful!');
 		} else {
-			res.status(202).send("Server is working, but should be running on a Raspberry Pi");
+			res.status(202).send("Server is working, but should ideally be running on a Raspberry Pi");
 		}
 	});
 });
@@ -239,6 +221,9 @@ app.get("/ping", (req, res) => {
 app.get("/numLeds", (req, res) => { 
     res.status(200).send(numLeds.toString());
 });
-
+// expose config
+app.get('/config', (req, res) => {
+	res.json(settings)
+})
 
 
