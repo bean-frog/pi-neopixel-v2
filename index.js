@@ -142,34 +142,36 @@ app.post('/setPolice', (req, res) => {
     let isRedFirst = true;
     let isFlashing = true;
 
+    // Main police interval (alternates between red first and blue first)
     policeInterval = setInterval(() => {
-        for (let i = 0; i < numLeds; i++) {
-            if (extraFlashes) {
-                if (isFlashing) {
+        if (extraFlashes) {
+            // Flashing logic: set up a separate interval for flashing behavior
+            flashInterval = setInterval(() => {
+                for (let i = 0; i < numLeds; i++) {
                     if (i < half) {
-                        pixels[i] = 0x00FF00; // Red on the left half
+                        // Left side
+                        pixels[i] = isFlashing ? 0x00FF00 : 0x000000; // Red or black (off)
                     } else {
-                        pixels[i] = 0x0000FF; // Blue on the right half
+                        // Right side
+                        pixels[i] = isFlashing ? 0x000000 : 0x0000FF; // Black (off) or blue
                     }
-                } else {
-                    pixels[i] = 0x000000; // Black (off) when not flashing
                 }
-            } else {
+                ws281x.render(pixels);
+                isFlashing = !isFlashing; // Toggle flashing state
+            }, 100); // Flash interval is 100ms
+        } else {
+            // Normal police lights without extra flashes
+            for (let i = 0; i < numLeds; i++) {
                 if (i < half) {
                     pixels[i] = isRedFirst ? 0x00FF00 : 0x0000FF; // Alternating between red and blue
                 } else {
                     pixels[i] = isRedFirst ? 0x0000FF : 0x00FF00;
                 }
             }
+            ws281x.render(pixels);
         }
-        ws281x.render(pixels);
-        isRedFirst = !isRedFirst;
-        if (extraFlashes) {
-            isFlashing = !isFlashing; // Toggle flashing state
-        }
+        isRedFirst = !isRedFirst; // Toggle red/blue first
     }, speed * 100);
-    
-
     verboselog(colortext({r:0,g:255,b:0}, "Started: ") + `police animation with speed ${speed}, ` + (extraFlashes ? "" : "no ") + "extra flashes, and " + (includeOrange ? "" : "no ") + "orange lights.")
     res.sendStatus(200)
 });
