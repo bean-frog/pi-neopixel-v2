@@ -144,21 +144,16 @@ app.post('/setPolice', (req, res) => {
     let isFlashing = true;
 
     policeInterval = setInterval(() => {
-        for (let i = 0; i < numLeds; i++) {
-            if (includeOrange && (i < 3 || i >= numLeds - 3)) {
-                // Set the first and last 3 LEDs to solid orange if includeOrange is true
-                pixels[i] = 0xFFA500; // Orange color
-            } else if (i < half) {
-                // Set the first half to red or blue based on isRedFirst
-                pixels[i] = isRedFirst ? 0x00FF00 : 0x0000FF; 
-            } else {
-                // Set the second half to blue or red based on isRedFirst
-                pixels[i] = isRedFirst ? 0x0000FF : 0x00FF00;
+            for (let i = 0; i < numLeds; i++) {
+                if (i < half) {
+                    pixels[i] = isRedFirst ? 0x00FF00 : 0x0000FF; 
+                } else {
+                    pixels[i] = isRedFirst ? 0x0000FF : 0x00FF00;
+                }
             }
-        }
-        ws281x.render(pixels);
-        isRedFirst = !isRedFirst;
-    }, speed * 100);
+            ws281x.render(pixels);
+            isRedFirst = !isRedFirst;
+        }, speed * 100)
 
     verboselog(colortext({r:0,g:255,b:0}, "Started ") + `police animation with speed ${speed}, ` + (extraFlashes ? "" : "no ") + "extra flashes, and " + (includeOrange ? "" : "no ") + "orange lights.")
     res.sendStatus(200)
