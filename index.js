@@ -176,13 +176,63 @@ killAnimations();
 });
 
 app.post('/setCustomColorFlow', (req, res) => {
-	killAnimations();
-	const colors = req.body.colors;
+  killAnimations(); // Stop any existing animations
 
-	let offset = 0;
+  // Extract colors from the request body
+  const colors = req.body.colors.map(color => ({
+    r: color.r || 0,
+    g: color.g || 0,
+    b: color.b || 0,
+  }));
 
-	res.sendStatus(200);
-})
+  let offset = 0;
+
+  // Function to interpolate between two colors
+  function interpolateColor(color1, color2, t) {
+    return {
+      r: Math.round(color1.r * (1 - t) + color2.r * t),
+      g: Math.round(color1.g * (1 - t) + color2.g * t),
+      b: Math.round(color1.b * (1 - t) + color2.b * t),
+    };
+  }
+
+  // Function to get color at a specific position
+  function getColorAtPosition(position) {
+    const numColors = colors.length;
+    const segmentLength = LEDS / numColors;
+    const segmentIndex = Math.floor(position / segmentLength);
+    const segmentPosition = (position % segmentLength) / segmentLength;
+
+    const color1 = colors[segmentIndex];
+    const color2 = colors[(segmentIndex + 1) % numColors];
+
+    return interpolateColor(color1, color2, segmentPosition);
+  }
+
+  // Function to start the color flow animation
+  function startColorFlow() {
+    const interval = setInterval(() => {
+      const pixels = new Uint32Array(LEDS);
+      offset++;
+
+      for (let i = 0; i < LEDS; i++) {
+        const { r, g, b } = getColorAtPosition((i + offset) % LEDS);
+        pixels[i] = (r << 16) | (g << 8) | b; // Convert RGB to GRB
+      }
+
+      ws281x.render(pixels);
+    }, 16);
+
+    // Save the interval ID so it can be cleared later
+    animationInterval = interval;
+  }
+
+  // Start the new color flow animation
+  startColorFlow();
+
+  res.sendStatus(200);
+});
+
 
 // Start Express server
 app.listen(port, () => {
