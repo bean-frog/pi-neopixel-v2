@@ -140,47 +140,35 @@ app.post('/setPolice', (req, res) => {
     const speed = req.body.options.speed;
     const { includeOrange, extraFlashes } = req.body.options.extra;
     let isRedFirst = true;
+    let isFlashing = true;
 
     policeInterval = setInterval(() => {
-        // Set the initial color for each side
         for (let i = 0; i < numLeds; i++) {
-            if (i < half) {
-                pixels[i] = isRedFirst ? 0x00FF00 : 0x0000FF; // Green or Blue
+            if (extraFlashes) {
+                if (isFlashing) {
+                    if (i < half) {
+                        pixels[i] = 0x00FF00; // Red on the left half
+                    } else {
+                        pixels[i] = 0x0000FF; // Blue on the right half
+                    }
+                } else {
+                    pixels[i] = 0x000000; // Black (off) when not flashing
+                }
             } else {
-                pixels[i] = isRedFirst ? 0x0000FF : 0x00FF00; // Blue or Green
+                if (i < half) {
+                    pixels[i] = isRedFirst ? 0x00FF00 : 0x0000FF; // Alternating between red and blue
+                } else {
+                    pixels[i] = isRedFirst ? 0x0000FF : 0x00FF00;
+                }
             }
         }
         ws281x.render(pixels);
-
+        isRedFirst = !isRedFirst;
         if (extraFlashes) {
-            const flashColor = isRedFirst ? 0x00FF00 : 0x0000FF; // Set flash color based on current side
-            const lowBrightness = flashColor >> 1 & 0x7F7F7F; // Calculate mid brightness
-            for (let flash = 0; flash < 2; flash++) {
-                // Flash one side from mid brightness to high brightness twice
-                for (let i = 0; i < half; i++) {
-                    if (isRedFirst) {
-                        pixels[i] = lowBrightness;
-                    } else {
-                        pixels[i + half] = lowBrightness;
-                    }
-                }
-                ws281x.render(pixels);
-
-                setTimeout(() => {
-                    for (let i = 0; i < half; i++) {
-                        if (isRedFirst) {
-                            pixels[i] = flashColor;
-                        } else {
-                            pixels[i + half] = flashColor;
-                        }
-                    }
-                    ws281x.render(pixels);
-                }, speed * 50);
-            }
+            isFlashing = !isFlashing; // Toggle flashing state
         }
-
-        isRedFirst = !isRedFirst; // Switch sides
     }, speed * 100);
+    
 
     verboselog(colortext({r:0,g:255,b:0}, "Started: ") + `police animation with speed ${speed}, ` + (extraFlashes ? "" : "no ") + "extra flashes, and " + (includeOrange ? "" : "no ") + "orange lights.")
     res.sendStatus(200)
