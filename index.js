@@ -129,10 +129,127 @@ killAnimations();
 })
 
 // custom flow
+let customFlowInterval = null;
+
 app.post('/setCustomColorFlow', (req, res) => {
-    console.log(req.body.colors)
-    res.sendStatus(200)
+    const colors = req.body.colors;
+    const colorArray = Object.values(colors);
+    const numColors = colorArray.length;
+    
+    // Check if there are colors to display
+    if (numColors === 0) {
+        return res.status(400).send('No colors provided.');
+    }
+
+    const numLeds = pixels.length;
+    const segmentLength = Math.floor(numLeds / numColors);
+
+    // Fill the pixels array with the colors evenly
+    for (let i = 0; i < numLeds; i++) {
+        const colorIndex = Math.floor(i / segmentLength) % numColors;
+        const { r, g, b } = colorArray[colorIndex];
+        pixels[i] = (r << 8) | (g << 16) | b;
+    }
+    
+    ws281x.render(pixels);
+    verboselog(`Colors set and scrolling effect started.`);
+
+    // Clear any existing interval
+    if (customFlowInterval !== null) {
+        clearInterval(customFlowInterval);
+    }
+
+    // Set up an interval to shift the pixels
+    customFlowInterval = setInterval(() => {
+        // Shift pixels by one position
+        const lastPixel = pixels.pop();
+        pixels.unshift(lastPixel);
+        ws281x.render(pixels);
+    }, 100); // Adjust the interval time to control the scroll speed
+
+    res.sendStatus(200);
 });
+let customFlowInterval = null;
+
+app.post('/setCustomColorFlow', (req, res) => {
+    const colors = req.body.colors;
+    const colorArray = Object.values(colors);
+    const numColors = colorArray.length;
+    
+    // Check if there are colors to display
+    if (numColors === 0) {
+        return res.status(400).send('No colors provided.');
+    }
+
+    const numLeds = pixels.length;
+    const segmentLength = Math.floor(numLeds / numColors);
+
+    // Fill the pixels array with the colors evenly
+    for (let i = 0; i < numLeds; i++) {
+        const colorIndex = Math.floor(i / segmentLength) % numColors;
+        const { r, g, b } = colorArray[colorIndex];
+        pixels[i] = (r << 8) | (g << 16) | b;
+    }
+    
+    ws281x.render(pixels);
+    verboselog(`Colors set and scrolling effect started.`);
+
+    // Clear any existing interval
+    if (customFlowInterval !== null) {
+        clearInterval(customFlowInterval);
+    }
+
+    // Set up an interval to shift the pixels
+    customFlowInterval = setInterval(() => {
+        // Shift pixels by one position
+        const lastPixel = pixels.pop();
+        pixels.unshift(lastPixel);
+        ws281x.render(pixels);
+    }, 100); // Adjust the interval time to control the scroll speed
+
+    res.sendStatus(200);
+});
+let customFlowInterval = null;
+
+app.post('/setCustomColorFlow', (req, res) => {
+    const colors = req.body.colors;
+    const colorArray = Object.values(colors);
+    const numColors = colorArray.length;
+    
+    // Check if there are colors to display
+    if (numColors === 0) {
+        return res.status(400).send('No colors provided.');
+    }
+
+    const numLeds = pixels.length;
+    const segmentLength = Math.floor(numLeds / numColors);
+
+    // Fill the pixels array with the colors evenly
+    for (let i = 0; i < numLeds; i++) {
+        const colorIndex = Math.floor(i / segmentLength) % numColors;
+        const { r, g, b } = colorArray[colorIndex];
+        pixels[i] = (r << 8) | (g << 16) | b;
+    }
+    
+    ws281x.render(pixels);
+    verboselog(`Colors set and scrolling effect started.`);
+
+    // Clear any existing interval
+    if (customFlowInterval !== null) {
+        clearInterval(customFlowInterval);
+    }
+
+    // Set up an interval to shift the pixels
+    customFlowInterval = setInterval(() => {
+        // Shift pixels by one position
+        const lastPixel = pixels.pop();
+        pixels.unshift(lastPixel);
+        ws281x.render(pixels);
+    }, 100); // Adjust the interval time to control the scroll speed
+
+    res.sendStatus(200);
+});
+
 
 // police lights
 app.post('/setPolice', (req, res) => {
@@ -173,64 +290,6 @@ killAnimations();
 	rainbowInterval = setInterval(rainbowLoop, speed);
 	verboselog(colortext({r:0, g:255, b:0}, "Started ") + `rainbow animation with speed ${speed} and width ${width}`)
 	res.sendStatus(200);
-});
-
-app.post('/setCustomColorFlow', (req, res) => {
-  killAnimations(); // Stop any existing animations
-
-  // Extract colors from the request body
-  const colors = req.body.colors.map(color => ({
-    r: color.r || 0,
-    g: color.g || 0,
-    b: color.b || 0,
-  }));
-
-  let offset = 0;
-
-  // Function to interpolate between two colors
-  function interpolateColor(color1, color2, t) {
-    return {
-      r: Math.round(color1.r * (1 - t) + color2.r * t),
-      g: Math.round(color1.g * (1 - t) + color2.g * t),
-      b: Math.round(color1.b * (1 - t) + color2.b * t),
-    };
-  }
-
-  // Function to get color at a specific position
-  function getColorAtPosition(position) {
-    const numColors = colors.length;
-    const segmentLength = LEDS / numColors;
-    const segmentIndex = Math.floor(position / segmentLength);
-    const segmentPosition = (position % segmentLength) / segmentLength;
-
-    const color1 = colors[segmentIndex];
-    const color2 = colors[(segmentIndex + 1) % numColors];
-
-    return interpolateColor(color1, color2, segmentPosition);
-  }
-
-  // Function to start the color flow animation
-  function startColorFlow() {
-    const interval = setInterval(() => {
-      const pixels = new Uint32Array(LEDS);
-      offset++;
-
-      for (let i = 0; i < LEDS; i++) {
-        const { r, g, b } = getColorAtPosition((i + offset) % LEDS);
-        pixels[i] = (r << 16) | (g << 8) | b; // Convert RGB to GRB
-      }
-
-      ws281x.render(pixels);
-    }, 16);
-
-    // Save the interval ID so it can be cleared later
-    animationInterval = interval;
-  }
-
-  // Start the new color flow animation
-  startColorFlow();
-
-  res.sendStatus(200);
 });
 
 
