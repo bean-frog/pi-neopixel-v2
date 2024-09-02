@@ -54,7 +54,7 @@
     <section class="flex flex-col gap-4 p-4 w-2/3 border-2 border-white border-solid">
         <h1 class="text-2xl text-white">Advanced Controls</h1>
         <div class="grid grid-cols-2 gap-4">
-            <div class="flex flex-col p-4 pt-2 rounded-md border-2 border-white border-solid h-fit">
+            <div class="flex flex-col p-4 pt-2 rounded-md border-2 border-white border-solid h-full">
                 <h1 class="mb-2 text-xl text-white">Rainbow Animated</h1>
                 <div id="rainbow-options">
                     <h1 class="text-lg text-white">Speed:</h1>
@@ -68,16 +68,12 @@
                 </div>
             </div>
 
-            <div class="flex flex-col p-4 pt-2 rounded-md border-2 border-white border-solid h-fit">
+            <div class="flex flex-col p-4 pt-2 rounded-md border-2 border-white border-solid h-full">
                 <h1 class="mb-2 text-xl text-white">Police Lights Animated</h1>
                 <div id="police-options">
                     <h1 class="text-lg text-white">Speed:</h1>
                     <!--https://stackoverflow.com/questions/40275891/how-to-reverse-the-direction-in-html5-range-input -->
                     <input style="direction: rtl" id="police-speed" type="range" min="1" max="10" value="5" class="range" />
-                    <span class="flex flex-row items-center space-x-2">
-                        <h1 class="text-lg text-white">Include Orange Lights:</h1>
-                        <input id="police-orange" type="checkbox" class="checkbox" />
-                    </span>
                     <span class="flex flex-row items-center space-x-2">
                         <h1 class="text-lg text-white">Extra Flashes:</h1>
                         <input id="police-flashes" type="checkbox" class="checkbox" />
@@ -89,7 +85,7 @@
                 </div>
             </div>
 
-            <div class="flex flex-col p-4 pt-2 rounded-md border-2 border-white border-solid h-fit">
+            <div class="flex flex-col p-4 pt-2 rounded-md border-2 border-white border-solid h-full">
                 <h1 class="mb-2 text-xl text-white">Custom Color Flow Animated</h1>
                 <div id="police-options">
                     <h1 class="text-lg text-white">Speed:</h1>
@@ -103,13 +99,13 @@
                     </div>
 
                     <span class="flex flex-row mt-2 space-x-2">
-                        <button onclick="setCustomColorFlow()" class="text-white btn btn-sm">Apply</button>
+                        <button onclick="updateCustomColors(); setCustomColorFlow()" class="text-white btn btn-sm">Apply</button>
                         <button onclick="setWhole({r:0,g:0,b:0})" class="text-white btn btn-sm">Clear Strip</button>
                     </span>
                 </div>
             </div>
 
-            <div class="flex flex-col p-4 pt-2 rounded-md border-2 border-white border-solid h-fit">
+            <div class="flex flex-col p-4 pt-2 rounded-md border-2 border-white border-solid h-full">
                 <h1 class="mb-2 text-xl text-white">Marquee Animated</h1>
                 <div id="police-options">
                     <h1 class="text-lg text-white">Speed:</h1>

@@ -139,7 +139,7 @@ app.post('/setPolice', (req, res) => {
     killAnimations();
     const half = Math.floor(numLeds / 2);
     const speed = req.body.options.speed;
-    const { includeOrange, extraFlashes } = req.body.options.extra;
+    const extraFlashes = req.body.options.extraFlashes;
     let isRedFirst = true;
     let isFlashing = true;
 
@@ -174,6 +174,15 @@ killAnimations();
 	verboselog(colortext({r:0, g:255, b:0}, "Started ") + `rainbow animation with speed ${speed} and width ${width}`)
 	res.sendStatus(200);
 });
+
+app.post('/setCustomColorFlow', (req, res) => {
+	killAnimations();
+	const colors = req.body.colors;
+
+	let offset = 0;
+
+	res.sendStatus(200);
+})
 
 // Start Express server
 app.listen(port, () => {

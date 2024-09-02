@@ -14,7 +14,7 @@ let customColorSpeed = 10;
 
 let rainbowSettings = {speed: 10, width: 5};
 
-let policeSettings = {speed: 5, extra: {includeOrange: false, extraFlashes: false}};
+let policeSettings = {speed: 5, extraFlashes: false};
 
 let marqueeSettings = {speed: 10, color:{r: 255, g: 0, b: 0}};
 
@@ -58,13 +58,13 @@ function setSingleLed(lednum, color) {
     })
 };
 
-function setCustomColorFlow(colors) {
+function setCustomColorFlow() {
     fetch('/setCustomColorFlow', {
         method: "POST",
         headers: {
             "Content-Type": "application/json"
         },
-        body: JSON.stringify({speed: customColorSpeed, colors: colors})
+        body: JSON.stringify({speed: customColorSpeed, colors: customColors})
     })
     .then(response => {
         if (!response.ok) {
@@ -286,18 +286,12 @@ document.getElementById("addCustomColor").addEventListener("click", addColor);
   document.getElementById("police-speed").addEventListener('input', function() {
  	policeSettings.speed = this.value;
  });
-   document.getElementById("police-orange").addEventListener('input', function() {
- 	if (this.checked) {
- 		policeSettings.extra.includeOrange = true;
- 	} else {
- 		policeSettings.extra.includeOrange = false;
- 	}
- })
+  
    document.getElementById("police-flashes").addEventListener('input', function() {
  	if (this.checked) {
- 	 		policeSettings.extra.extraFlashes = true;
+ 	 		policeSettings.extraFlashes = true;
  	 	} else {
- 	 		policeSettings.extra.extraFlashes = false;
+ 	 		policeSettings.extraFlashes = false;
  	 	}
  })
 
