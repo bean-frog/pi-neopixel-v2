@@ -147,6 +147,7 @@ app.post('/setMarquee', (req, res) => {
 	let offset = 0;
 	const hex = r << 16 | g << 8 | b;
 	marqueeInterval = setInterval(() => {
+	console.log("interval")
 		for (let i = 0; i < numLeds; i++) {
 			pixels[i] = (i % 2 === 0) ? hex : 0x000000;
 		}
