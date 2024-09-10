@@ -69,7 +69,19 @@ function colortext(color, text) {
     const { r, g, b } = color;
     return `\x1b[38;2;${r};${g};${b}m${text}\x1b[0m`;
 }
-
+/*
+function rgbToHex(r, g, b) {
+	var out = '#';
+	for (let i = 0; i < 3; i++) {
+		let n = typeof arguments[i] === 'number' ? arguments[i] : parseInt(arguments[i]);
+		if (isNaN(n) || n < 0 || n > 255) {
+			return false;
+		}
+		out += (n < 16 ? '0' : '') + n.toString(16);
+	}
+	return(out)
+}
+*/
 // piixel conf
 // comment this thing out for development when not on a Pi if MOCK_PIIXEL doesnt work
 ws281x.configure(
@@ -128,6 +140,25 @@ killAnimations();
     res.sendStatus(200);
 })
 
+app.post('/setMarquee', (req, res) => {
+	killAnimations();
+	const {r, g, b} = req.body.options.color;
+	const speed = req.body.options.speed;
+	let offset = 0;
+	const hex = r << 16 | g << 8 | b;
+	marqueeInterval = setInterval(() => {
+		for (let i = 0; i < numLeds; i++) {
+			pixels[i] = (i % 2 === 0) ? hex : 0x000000;
+		}
+		const lastPixel = pixels[numLeds - 1];
+		for (let i = numLeds - 1; i > 0; i--) {
+			pixels[i] = pixels[i - 1];
+		}
+		pixels[0] = lastPixel;
+		ws281x.render(pixels)
+	}, speed * 10);
+	res.sendStatus(200)
+})
 
 app.post('/setCustomColorFlow', (req, res) => {
 killAnimations();
@@ -138,7 +169,6 @@ killAnimations();
     const formattedColors = colorArray.map(({r, g, b}) => colortext({r, g, b}, `(${r}, ${g}, ${b})`)).join('; ')
     let offset = 0
     
-    // Check if there are colors to display
     if (numColors === 0) {
         return res.status(400).send('No colors provided.');
     }

@@ -14,7 +14,7 @@ let customColorSpeed = 10;
 
 let rainbowSettings = {speed: 10, width: 5};
 
-let policeSettings = {speed: 5, extraFlashes: false};
+let policeSettings = {speed: 5};
 
 let marqueeSettings = {speed: 10, color:{r: 255, g: 0, b: 0}};
 
@@ -59,6 +59,9 @@ function setSingleLed(lednum, color) {
 };
 
 function setCustomColorFlow() {
+if (!customColors) {
+window.alert("Add some colors first!")
+} else {
     fetch('/setCustomColorFlow', {
         method: "POST",
         headers: {
@@ -74,6 +77,7 @@ function setCustomColorFlow() {
     .catch(error => {
         console.error("Error: " + error)
     })
+    }
 };
 
 // currently untested
@@ -288,12 +292,5 @@ document.getElementById("custom-color-speed").addEventListener('input', function
   document.getElementById("police-speed").addEventListener('input', function() {
  	policeSettings.speed = this.value;
  });
-  
-   document.getElementById("police-flashes").addEventListener('input', function() {
- 	if (this.checked) {
- 	 		policeSettings.extraFlashes = true;
- 	 	} else {
- 	 		policeSettings.extraFlashes = false;
- 	 	}
- })
+
 

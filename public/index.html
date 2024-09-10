@@ -42,7 +42,7 @@
                 
                 <div class="flex flex-row gap-4 justify-center items-center mt-2">
                     <h1 class="text-lg text-white">Color:</h1>
-                    <input type="color" class="w-6 h-6 border border-white border-solid" id="single-display"></input>
+                    <input type="color" class="w-6 h-6 btn btn-sm px-2" id="single-display"></input>
                     <h1 class="text-lg text-white">LED ID:</h1>
                     <input id="ledId" type="number" value="0" class="w-10 text-white bg-black">
                     <button class="text-white btn btn-sm" onclick="setSingleLed(document.getElementById('ledId').value, singleLedColor)">Apply</button>
@@ -74,10 +74,6 @@
                     <h1 class="text-lg text-white">Speed:</h1>
                     <!--https://stackoverflow.com/questions/40275891/how-to-reverse-the-direction-in-html5-range-input -->
                     <input style="direction: rtl" id="police-speed" type="range" min="1" max="10" value="5" class="range" />
-                    <span class="flex flex-row items-center space-x-2">
-                        <h1 class="text-lg text-white">Extra Flashes:</h1>
-                        <input id="police-flashes" type="checkbox" class="checkbox" />
-                    </span>
                     <span class="flex flex-row mt-2 space-x-2">
                         <button onclick="setPolice()" class="text-white btn btn-sm">Apply</button>
                         <button onclick="setWholeStrip({r:0,g:0,b:0})" class="text-white btn btn-sm">Clear</button>
