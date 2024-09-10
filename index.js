@@ -141,26 +141,29 @@ killAnimations();
 })
 
 app.post('/setMarquee', (req, res) => {
-	killAnimations();
-	const {r, g, b} = req.body.options.color;
-	const speed = req.body.options.speed;
-	let offset = 0;
-	const hex = r << 16 | g << 8 | b;
-	marqueeInterval = setInterval(() => {
-	console.log("interval")
-		for (let i = 0; i < numLeds; i++) {
-			pixels[i] = (i % 2 === 0) ? hex : 0x000000;
-		}
-		const lastPixel = pixels[numLeds - 1];
-		for (let i = numLeds - 1; i > 0; i--) {
-			pixels[i] = pixels[i - 1];
-		}
-		pixels[0] = lastPixel;
-		ws281x.render(pixels)
-	}, speed * 10);
-	res.sendStatus(200)
-})
+    killAnimations();
+    const { r, g, b } = req.body.options.color;
+    const speed = req.body.options.speed;
+    const gap = req.body.options.gap || 1; 
 
+    let offset = 0;
+    const hex = r << 16 | g << 8 | b;
+
+    marqueeInterval = setInterval(() => {
+        for (let i = 0; i < numLeds; i++) {
+            if ((i + offset) % (gap * 2) < gap) {
+                pixels[i] = hex;
+            } else {
+                pixels[i] = 0x000000;
+            }
+        }
+        ws281x.render(pixels);
+        offset = (offset + 1) % (gap * 2);
+
+    }, speed * 10);
+
+    res.sendStatus(200);
+});
 app.post('/setCustomColorFlow', (req, res) => {
 killAnimations();
     const colors = req.body.colors;
