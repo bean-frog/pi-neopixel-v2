@@ -16,7 +16,7 @@ let rainbowSettings = {speed: 10, width: 5};
 
 let policeSettings = {speed: 5};
 
-let marqueeSettings = {speed: 10, color:{r: 255, g: 0, b: 0}};
+let marqueeSettings = {speed: 10, color:{r: 255, g: 0, b: 0}, gap: 1};
 
 // ====>
 // HTTP Request functions
@@ -292,5 +292,9 @@ document.getElementById("custom-color-speed").addEventListener('input', function
   document.getElementById("police-speed").addEventListener('input', function() {
  	policeSettings.speed = this.value;
  });
-
-
+  document.getElementById("marquee-speed").addEventListener('input', function() {
+ 	marqueeSettings.speed = this.value;
+ });
+  document.getElementById("marquee-gap").addEventListener('input', function() {
+ 	marqueeSettings.speed = this.value;
+ }); 

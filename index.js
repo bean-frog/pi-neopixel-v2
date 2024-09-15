@@ -147,7 +147,7 @@ app.post('/setMarquee', (req, res) => {
     const gap = req.body.options.gap || 1; 
 
     let offset = 0;
-    const hex = r << 16 | g << 8 | b;
+    const hex = g << 16 | r << 8 | b;
 
     marqueeInterval = setInterval(() => {
         for (let i = 0; i < numLeds; i++) {
