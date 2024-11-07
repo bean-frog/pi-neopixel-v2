@@ -1,10 +1,10 @@
-// Neopixel Controller V2 frontend script
+// Neopixel Controller V2 frontend 
 // (c) 2024 beanfrog 
 // MIT License
 
-//====>
+//
 // Variables that may or may not make sense to have here
-//====?
+//
 let wholeStripColor = {r: 255, g: 255, b:255};
 let singleLedColor = {r: 255, g: 255, b:255};
 
@@ -18,9 +18,9 @@ let policeSettings = {speed: 5};
 
 let marqueeSettings = {speed: 10, color:{r: 255, g: 0, b: 0}, gap: 1};
 
-// ====>
+// 
 // HTTP Request functions
-// ====>
+// 
 
 function setWholeStrip(color) {
     fetch('/setWhole', {
@@ -136,9 +136,9 @@ function setMarquee() {
     })
 }
 
-//====>
-// Helper Functions
-//====>
+//
+// Utility Functions
+//
 
 // get number of available leds
 async function getNumLeds() {

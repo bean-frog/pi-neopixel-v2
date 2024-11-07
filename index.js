@@ -3,19 +3,19 @@
 // MIT License
 
 
-//--------------//
-// dependencies //
-//--------------//
-const { colorwheel, StripType, ws281x } = require('piixel'); // comment this line out for development when not on a Pi if MOCK_PIIXEL doesnt work
+//
+// dependencies
+//
+const { colorwheel, StripType, ws281x } = require('piixel');
 const express = require('express');
 const path = require('path');
 const os = require('os');
 const fs = require("fs");
 const settings = require('./setup/config.json');
 
-//------------//
-// setup/init //
-//------------//
+//
+// setup/init 
+//
 
 // globally scoped settings
 const numLeds = settings.number_of_leds;
@@ -30,7 +30,7 @@ let flashInterval;
 let marqueeInterval;
 let customFlowInterval;
 
-//kill all animations
+// kill all existing animations
 function killAnimations() {
 	if (rainbowInterval) {
 		clearInterval(rainbowInterval);
@@ -76,7 +76,6 @@ function rgbToHex(color) {
 }
 
 // piixel conf
-// comment this thing out for development when not on a Pi if MOCK_PIIXEL doesnt work
 ws281x.configure(
 	{
 		gpio: gpioDataPin,
@@ -89,7 +88,7 @@ ws281x.configure(
 const pixels = new Uint32Array(numLeds);
 
 
-// server conf
+// express server conf
 const app = express();
 app.use(express.json());
 const publicPath = path.join(__dirname, 'public');
@@ -133,6 +132,7 @@ killAnimations();
     res.sendStatus(200);
 })
 
+// theater marquee
 app.post('/setMarquee', (req, res) => {
     killAnimations();
     const { r, g, b } = req.body.options.color;
@@ -158,6 +158,8 @@ app.post('/setMarquee', (req, res) => {
 console.log(colortext({r:0,g:255,b:0}, "Started") + " marquee animation with color " + colortext(req.body.options.color, `${r}, ${g}, ${b}`) + `, speed ${speed}, and gap ${gap}`)
     res.sendStatus(200);
 });
+
+// custom color flow
 app.post('/setCustomColorFlow', (req, res) => {
 killAnimations();
     const colors = req.body.colors;
@@ -219,6 +221,8 @@ app.post('/setPolice', (req, res) => {
     verboselog(colortext({r:0,g:255,b:0}, "Started ") + `police animation with speed ${speed} and ` + (extraFlashes ? "" : "no ") + "extra flashes")
     res.sendStatus(200)
 });
+
+// rainbow
 app.post('/setRainbow', (req, res) => {
 killAnimations();
 	const {speed, width} = req.body.options;
@@ -239,7 +243,7 @@ killAnimations();
 
 // Start Express server
 app.listen(port, () => {
-    // Grab user's local IP to display 
+    // Grab user's 8local IP to display 
     const interfaces = os.networkInterfaces();
     let localIp;
     Object.keys(interfaces).forEach((netInterface) => {
@@ -266,7 +270,6 @@ app.listen(port, () => {
 // connection test endpoint
 app.get("/ping", (req, res) => {
 	// read proc/cpuinfo to determine if running on a Pi
-	
 	fs.readFile('/proc/cpuinfo', 'utf8', (err, data) => {
 		if (err) {
 			console.log(colortext({r:255,g:0,b:0}, "Error ") + "reading /proc/cpuinfo:");
@@ -276,14 +279,16 @@ app.get("/ping", (req, res) => {
 		if (data.includes("Pi")) {
 			res.status(200).send('Pong! Connection Successful!');
 		} else {
-			res.status(202).send("Server is working, but should ideally be running on a Raspberry Pi");
+			res.status(202).send("Server is working, but is not running on a Raspberry Pi");
 		}
 	});
 });
+
 // expose number of leds
 app.get("/numLeds", (req, res) => { 
     res.status(200).send(numLeds.toString());
 });
+
 // expose config
 app.get('/config', (req, res) => {
 	res.json(settings)
