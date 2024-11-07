@@ -296,5 +296,9 @@ document.getElementById("custom-color-speed").addEventListener('input', function
  	marqueeSettings.speed = this.value;
  });
   document.getElementById("marquee-gap").addEventListener('input', function() {
- 	marqueeSettings.speed = this.value;
+ 	marqueeSettings.gap = this.value;
  }); 
+ document.getElementById("marquee-color").addEventListener('input', function() {
+ const [ r, g, b ] = hexToRgb(this.value)
+ marqueeSettings.color = {r, g, b}
+ })

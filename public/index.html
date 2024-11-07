@@ -63,7 +63,7 @@
                     <input id="rainbow-width" type="range" min="1" max="10" value="3" class="range" />
                     <span class="flex flex-row mt-2 space-x-2">
                         <button onclick="setRainbow()" class="text-white btn btn-sm">Apply</button>
-                        <button onclick="setWhole({r:0,g:0,b:0})"class="text-white btn btn-sm">Clear</button>
+                        <button onclick="setWholeStrip({r:0,g:0,b:0})"class="text-white btn btn-sm">Clear</button>
                     </span>
                 </div>
             </div>
@@ -96,7 +96,7 @@
 
                     <span class="flex flex-row mt-2 space-x-2">
                         <button onclick="updateCustomColors(); setCustomColorFlow()" class="text-white btn btn-sm">Apply</button>
-                        <button onclick="setWhole({r:0,g:0,b:0})" class="text-white btn btn-sm">Clear Strip</button>
+                        <button onclick="setWholeStrip({r:0,g:0,b:0})" class="text-white btn btn-sm">Clear Strip</button>
                     </span>
                 </div>
             </div>
@@ -105,16 +105,16 @@
                 <h1 class="mb-2 text-xl text-white">Marquee Animated</h1>
                 <div id="marquee-options">
                     <h1 class="text-lg text-white">Speed:</h1>
-                    <input id="marquee-speed" type="range" min="1" max="10" value="5" class="range" />
+                    <input style="direction:rtl" id="marquee-speed" type="range" min="2" max="30" value="5" class="range" />
                     <h1 class="text-lg text-white">Gap</h1>
-                    <input id="marquee-gap" type="range" min="1" max="10" value="5" class="range"/>
+                    <input id="marquee-gap" type="range" min="0" max="20" value="0" class="range"/>
                     <span class="flex flex-row items-center space-x-2">
                     <h1 class="text-lg text-white">Color:</h1>
-                    <input type="color" class="w-6 h-6 border border-white border-solid" id="single-display"></input>
+                    <input id="marquee-color" type="color" class="w-6 h-6 border border-white border-solid" id="single-display"></input>
                         </span>
                     <span class="flex flex-row mt-2 space-x-2">
                         <button onclick="setMarquee()" class="text-white btn btn-sm">Apply</button>
-                        <button onclick="setWhole({r:0,g:0,b:0})" class="text-white btn btn-sm">Clear Strip</button>
+                        <button onclick="setWholeStrip({r:0,g:0,b:0})" class="text-white btn btn-sm">Clear Strip</button>
                     </span>
                 </div>
             </div>

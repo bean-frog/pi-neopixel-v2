@@ -69,19 +69,12 @@ function colortext(color, text) {
     const { r, g, b } = color;
     return `\x1b[38;2;${r};${g};${b}m${text}\x1b[0m`;
 }
-/*
-function rgbToHex(r, g, b) {
-	var out = '#';
-	for (let i = 0; i < 3; i++) {
-		let n = typeof arguments[i] === 'number' ? arguments[i] : parseInt(arguments[i]);
-		if (isNaN(n) || n < 0 || n > 255) {
-			return false;
-		}
-		out += (n < 16 ? '0' : '') + n.toString(16);
-	}
-	return(out)
+
+function rgbToHex(color) {
+  const { r, g, b } = color;
+  return "0x" + (1 << 24 | g << 16 | r << 8 | b).toString(16).slice(1);
 }
-*/
+
 // piixel conf
 // comment this thing out for development when not on a Pi if MOCK_PIIXEL doesnt work
 ws281x.configure(
@@ -143,11 +136,12 @@ killAnimations();
 app.post('/setMarquee', (req, res) => {
     killAnimations();
     const { r, g, b } = req.body.options.color;
+    console.log(req.body.options.color)
     const speed = req.body.options.speed;
     const gap = req.body.options.gap || 1; 
 
     let offset = 0;
-    const hex = g << 16 | r << 8 | b;
+    const hex = rgbToHex(req.body.options.color)
 
     marqueeInterval = setInterval(() => {
         for (let i = 0; i < numLeds; i++) {
@@ -161,7 +155,7 @@ app.post('/setMarquee', (req, res) => {
         offset = (offset + 1) % (gap * 2);
 
     }, speed * 10);
-
+console.log(colortext({r:0,g:255,b:0}, "Started") + " marquee animation with color " + colortext(req.body.options.color, `${r}, ${g}, ${b}`) + `, speed ${speed}, and gap ${gap}`)
     res.sendStatus(200);
 });
 app.post('/setCustomColorFlow', (req, res) => {
