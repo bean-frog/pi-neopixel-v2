@@ -5,123 +5,125 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pi-Neopixel-v2</title>
     <link rel="stylesheet" href="style.css">
+    <style>
+		.rtl {
+			direction:rtl
+		}
+    </style>
 </head>
-<body class="h-screen w-screen bg-grey-800">
-    <div class="flex flex-col justify-center items-center p-4 w-full h-1/5 border-2 border-white border-solid">
+<body class="h-screen w-screen bg-gray-800">
+
+    <div class="flex flex-col justify-center items-center p-4 w-full h-1/5 border-b-2 border-white text-center">
         <h1 class="text-3xl font-bold text-white">Neopixel Controller V2</h1>
         <h1 class="text-lg text-white" id="connStatus">Disconnected 🔴</h1>
         <h1 class="text-lg text-white">Number of available LEDs: <span class="font-bold" id="numLeds">N/A</span></h1>
     </div>
-    <div class="flex flex-row w-full h-4/5 border-2 border-white border-solid">
-        <section class="justify-center p-4 w-1/3 border-2 border-white border-solid">
+
+    <div class="flex flex-col lg:flex-row w-full h-4/5">
+        <!-- Simple Controls -->
+        <section class="flex flex-col justify-start items-center p-4 w-full lg:w-1/3 border-r-2 border-white">
             <h1 class="text-2xl text-white">Simple Controls</h1>
-           
-        <div class="p-4 pt-2 mt-4 rounded-md border-2 border-white border-solid">
-            <h1 class="mb-2 text-xl text-white">Whole Strip</h1>
-                <div id="whole-strip-color-sliders">
+
+            <!-- Whole Strip Control -->
+            <div class="bg-gray-700 p-4 mt-4 rounded-md border border-white w-full">
+                <h1 class="mb-2 text-xl text-white">Whole Strip</h1>
+                <div id="whole-strip-color-sliders" class="space-y-2">
                     <input id="whole-red" type="range" min="0" max="255" value="255" class="range [--range-shdw:#FF0000aa]" />
                     <input id="whole-green" type="range" min="0" max="255" value="255" class="range [--range-shdw:#00FF00aa]" />
                     <input id="whole-blue" type="range" min="0" max="255" value="255" class="range [--range-shdw:#0000FFaa]" />
                 </div>
-                <div class="flex flex-row gap-4 justify-center items-center mt-2">
+                <div class="flex items-center justify-center gap-2 mt-4">
                     <h1 class="text-lg text-white">Color:</h1>
-                    <input type="color" class="w-6 h-6 border border-white border-solid" id="whole-display"></input>
-                    <button class="text-white btn btn-sm" onclick="setWholeStrip(wholeStripColor)">Apply</button>
-                    <button class="text-white btn btn-sm" onclick="setWholeStrip({r: 0, g: 0, b: 0})">Clear Strip</button>
+                    <input type="color" class="w-8 h-8 border border-white" id="whole-display">
+                    <button class="btn btn-sm btn-outline text-white" onclick="setWholeStrip(wholeStripColor)">Apply</button>
+                    <button class="btn btn-sm btn-outline text-white" onclick="setWholeStrip({r: 0, g: 0, b: 0})">Clear Strip</button>
                 </div>
-               
-        </div>
-
-        <div class="p-4 pt-2 mt-4 rounded-md border-2 border-white border-solid">
-            <h1 class="mb-2 text-xl text-white">Single LED</h1>
-            <div id="single-led-color-sliders">
-                <input id="single-red" type="range" min="0" max="255" value="255" class="range [--range-shdw:#FF0000aa]" />
-                <input id="single-green" type="range" min="0" max="255" value="255" class="range [--range-shdw:#00FF00aa]" />
-                <input id="single-blue" type="range" min="0" max="255" value="255" class="range [--range-shdw:#0000FFaa]" />
             </div>
-                
-                <div class="flex flex-row gap-4 justify-center items-center mt-2">
+
+            <!-- Single LED Control -->
+            <div class="bg-gray-700 p-4 mt-4 rounded-md border border-white w-full">
+                <h1 class="mb-2 text-xl text-white">Single LED</h1>
+                <div id="single-led-color-sliders" class="space-y-2">
+                    <input id="single-red" type="range" min="0" max="255" value="255" class="range [--range-shdw:#FF0000aa]" />
+                    <input id="single-green" type="range" min="0" max="255" value="255" class="range [--range-shdw:#00FF00aa]" />
+                    <input id="single-blue" type="range" min="0" max="255" value="255" class="range [--range-shdw:#0000FFaa]" />
+                </div>
+                <div class="flex items-center justify-center gap-2 mt-4">
                     <h1 class="text-lg text-white">Color:</h1>
-                    <input type="color" class="w-6 h-6 outline-none -m-2 p-0" id="single-display"></input>
+                    <input type="color" class="w-8 h-8 border border-white" id="single-display">
                     <h1 class="text-lg text-white">LED ID:</h1>
-                    <input id="ledId" type="number" value="0" class="w-10 text-white bg-black">
-                    <button class="text-white btn btn-sm" onclick="setSingleLed(document.getElementById('ledId').value, singleLedColor)">Apply</button>
-                    <button class="text-white btn btn-sm" onclick="setSingleLed(document.getElementById('ledId').value, {r: 0, g: 0, b: 0})">Clear LED</button>
-                </div>
-               
-        </div>
-    </section>
-    <section class="flex flex-col gap-4 p-4 w-2/3 border-2 border-white border-solid">
-        <h1 class="text-2xl text-white">Advanced Controls</h1>
-        <div class="grid grid-cols-2 gap-4">
-            <div class="flex flex-col p-4 pt-2 rounded-md border-2 border-white border-solid h-full">
-                <h1 class="mb-2 text-xl text-white">Rainbow Animated</h1>
-                <div id="rainbow-options">
-                    <h1 class="text-lg text-white">Speed:</h1>
-                    <input style="direction:rtl" id="rainbow-speed" type="range" min="1" max="20" value="20" class="range" />
-                    <h1 class="text-lg text-white">Width:</h1>
-                    <input id="rainbow-width" type="range" min="1" max="10" value="3" class="range" />
-                    <span class="flex flex-row mt-2 space-x-2">
-                        <button onclick="setRainbow()" class="text-white btn btn-sm">Apply</button>
-                        <button onclick="setWholeStrip({r:0,g:0,b:0})"class="text-white btn btn-sm">Clear</button>
-                    </span>
+                    <input id="ledId" type="number" value="0" class="input w-14 bg-gray-900 text-white">
+                    <button class="btn btn-sm btn-outline text-white" onclick="setSingleLed(document.getElementById('ledId').value, singleLedColor)">Apply</button>
+                    <button class="btn btn-sm btn-outline text-white" onclick="setSingleLed(document.getElementById('ledId').value, {r: 0, g: 0, b: 0})">Clear LED</button>
                 </div>
             </div>
+        </section>
 
-            <div class="flex flex-col p-4 pt-2 rounded-md border-2 border-white border-solid h-full">
-                <h1 class="mb-2 text-xl text-white">Police Lights Animated</h1>
-                <div id="police-options">
-                    <h1 class="text-lg text-white">Speed:</h1>
-                    <!--https://stackoverflow.com/questions/40275891/how-to-reverse-the-direction-in-html5-range-input -->
-                    <input style="direction: rtl" id="police-speed" type="range" min="1" max="10" value="5" class="range" />
-                    <span class="flex flex-row mt-2 space-x-2">
-                        <button onclick="setPolice()" class="text-white btn btn-sm">Apply</button>
-                        <button onclick="setWholeStrip({r:0,g:0,b:0})" class="text-white btn btn-sm">Clear</button>
-                    </span>
-                </div>
-            </div>
+        <!-- Advanced Controls -->
+        <section class="flex flex-col gap-4 p-4 w-full lg:w-2/3">
+            <h1 class="text-2xl text-white text-center">Advanced Controls</h1>
 
-            <div class="flex flex-col p-4 pt-2 rounded-md border-2 border-white border-solid h-full">
-                <h1 class="mb-2 text-xl text-white">Custom Color Flow Animated</h1>
-                <div id="police-options">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <!-- Rainbow Animation -->
+                <div class="bg-gray-700 p-4 rounded-md border border-white">
+                    <h1 class="mb-2 text-xl text-white">Rainbow Animated</h1>
                     <h1 class="text-lg text-white">Speed:</h1>
-                    <input style="direction:rtl" id="custom-color-speed" type="range" min="1" max="30" value="5" class="range" />
-                    <span class="flex flex-row items-center">
-                        <h1 class="text-lg text-white">Colors:</h1>
-                        <button id="addCustomColor" class="m-2 text-white btn btn-sm">Add</button>
-                    </span>
-                    <div id="customColorTray" class="flex overflow-x-scroll flex-grow p-2 h-14 rounded-md border-2 border-white border-solid overflow-y-clip">
-                       
+                    <input id="rainbow-speed" type="range" min="1" max="20" value="20" class="range rtl">
+                    <h1 class="text-lg text-white mt-2">Width:</h1>
+                    <input id="rainbow-width" type="range" min="1" max="10" value="3" class="range">
+                    <div class="flex justify-center gap-2 mt-4">
+                        <button onclick="setRainbow()" class="btn btn-sm btn-outline text-white">Apply</button>
+                        <button onclick="setWholeStrip({r:0,g:0,b:0})" class="btn btn-sm btn-outline text-white">Clear</button>
                     </div>
-
-                    <span class="flex flex-row mt-2 space-x-2">
-                        <button onclick="updateCustomColors(); setCustomColorFlow()" class="text-white btn btn-sm">Apply</button>
-                        <button onclick="setWholeStrip({r:0,g:0,b:0})" class="text-white btn btn-sm">Clear Strip</button>
-                    </span>
                 </div>
-            </div>
 
-            <div class="flex flex-col p-4 pt-2 rounded-md border-2 border-white border-solid h-full">
-                <h1 class="mb-2 text-xl text-white">Marquee Animated</h1>
-                <div id="marquee-options">
+                <!-- Police Lights Animation -->
+                <div class="bg-gray-700 p-4 rounded-md border border-white">
+                    <h1 class="mb-2 text-xl text-white">Police Lights Animated</h1>
                     <h1 class="text-lg text-white">Speed:</h1>
-                    <input style="direction:rtl" id="marquee-speed" type="range" min="2" max="30" value="5" class="range" />
-                    <h1 class="text-lg text-white">Gap</h1>
-                    <input id="marquee-gap" type="range" min="0" max="20" value="0" class="range"/>
-                    <span class="flex flex-row items-center space-x-2">
-                    <h1 class="text-lg text-white">Color:</h1>
-                    <input id="marquee-color" type="color" class="w-6 h-6 border border-white border-solid" id="single-display"></input>
-                        </span>
-                    <span class="flex flex-row mt-2 space-x-2">
-                        <button onclick="setMarquee()" class="text-white btn btn-sm">Apply</button>
-                        <button onclick="setWholeStrip({r:0,g:0,b:0})" class="text-white btn btn-sm">Clear Strip</button>
-                    </span>
+                    <input id="police-speed" type="range" min="1" max="10" value="5" class="range rtl">
+                    <div class="flex justify-center gap-2 mt-4">
+                        <button onclick="setPolice()" class="btn btn-sm btn-outline text-white">Apply</button>
+                        <button onclick="setWholeStrip({r:0,g:0,b:0})" class="btn btn-sm btn-outline text-white">Clear</button>
+                    </div>
+                </div>
+
+                <!-- Custom Color Flow Animation -->
+                <div class="bg-gray-700 p-4 rounded-md border border-white">
+                    <h1 class="mb-2 text-xl text-white">Custom Color Flow Animated</h1>
+                    <h1 class="text-lg text-white">Speed:</h1>
+                    <input id="custom-color-speed" type="range" min="1" max="30" value="5" class="range rtl">
+                    <div class="flex items-center mt-2 gap-2">
+                        <h1 class="text-lg text-white">Colors:</h1>
+                        <button id="addCustomColor" class="btn btn-sm btn-outline text-white">Add</button>
+                    </div>
+                    <div id="customColorTray" class="flex overflow-x-scroll mt-2 h-14 rounded-md border border-white"></div>
+                    <div class="flex justify-center gap-2 mt-4">
+                        <button onclick="updateCustomColors(); setCustomColorFlow()" class="btn btn-sm btn-outline text-white">Apply</button>
+                        <button onclick="setWholeStrip({r:0,g:0,b:0})" class="btn btn-sm btn-outline text-white">Clear Strip</button>
+                    </div>
+                </div>
+
+                <!-- Marquee Animation -->
+                <div class="bg-gray-700 p-4 rounded-md border border-white">
+                    <h1 class="mb-2 text-xl text-white">Marquee Animated</h1>
+                    <h1 class="text-lg text-white">Speed:</h1>
+                    <input id="marquee-speed" type="range" min="2" max="30" value="5" class="range rtl">
+                    <h1 class="text-lg text-white mt-2">Gap:</h1>
+                    <input id="marquee-gap" type="range" min="0" max="20" value="0" class="range">
+                    <div class="flex items-center mt-2 gap-2">
+                        <h1 class="text-lg text-white">Color:</h1>
+                        <input id="marquee-color" type="color" class="w-8 h-8 border border-white">
+                    </div>
+                    <div class="flex justify-center gap-2 mt-4">
+                        <button onclick="setMarquee()" class="btn btn-sm btn-outline text-white">Apply</button>
+                        <button onclick="setWholeStrip({r:0,g:0,b:0})" class="btn btn-sm btn-outline text-white">Clear Strip</button>
+                    </div>
                 </div>
             </div>
-        </div>
-    </section>
-       </div>
-    
+        </section>
+    </div>
+
     <script src="script.js"></script> 
 </body>
 </html>

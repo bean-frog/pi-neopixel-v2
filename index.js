@@ -136,7 +136,6 @@ killAnimations();
 app.post('/setMarquee', (req, res) => {
     killAnimations();
     const { r, g, b } = req.body.options.color;
-    console.log(req.body.options.color)
     const speed = req.body.options.speed;
     const gap = req.body.options.gap || 1; 
 
