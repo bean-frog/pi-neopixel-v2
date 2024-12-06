@@ -1,7 +1,28 @@
 # pi-neopixel v2 documentation
+## Raspberry Pi setup
+- Install Raspbian (Raspberry Pi OS) using the instructions on the RaspberryPi website 
+- Clone this repository (`gh repo clone bean-frog/pi-neopixel-2`), or download and unzip with the green button at the top of the repo 
+- From /pi-neopixel-2, run `sudo node index.js`. `sudo` is required for the program to access the GPIO pins 
+- (optional) to make the program run every time the Pi is powered on, create a file in `/etc/systemd/system` called `neopixel.service`, with the following contents:
+```
+[Unit]
+Description=pi-neopixel-v2
+After=network.target
 
-<details>
-	<summary>Raspberry Pi setup</summary>
+[Service]
+ExecStart=/usr/bin/sudo /usr/bin/node /path/to/pi-neopixel-v2/index.js
+WorkingDirectory=/path/to/pi-neopixel-v2
+Restart=always
+User=root
+Group=root
+Environment=PATH=/usr/bin:/usr/local/bin
+Environment=NODE_ENV=production
+
+[Install]
+WantedBy=multi-user.target
+```
+
+
 </details>
 
 ## Configuration
