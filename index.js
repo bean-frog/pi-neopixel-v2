@@ -242,7 +242,7 @@ killAnimations();
 
 // Start Express server
 app.listen(port, () => {
-    // Grab user's 8local IP to display 
+    // Grab user's local IP to display 
     const interfaces = os.networkInterfaces();
     let localIp;
     Object.keys(interfaces).forEach((netInterface) => {

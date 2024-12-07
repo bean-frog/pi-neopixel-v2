@@ -1,9 +1,18 @@
-# pi-neopixel v2 documentation
-## Raspberry Pi setup
-- Install Raspbian (Raspberry Pi OS) using the instructions on the RaspberryPi website 
-- Clone this repository (`gh repo clone bean-frog/pi-neopixel-2`), or download and unzip with the green button at the top of the repo 
-- From /pi-neopixel-2, run `sudo node index.js`. `sudo` is required for the program to access the GPIO pins 
-- (optional) to make the program run every time the Pi is powered on, create a file in `/etc/systemd/system` called `neopixel.service`, with the following contents:
+# pi-neopixel v2 
+
+## Hardware setup
+- Connect the positive lead to one of the 5v pins on the Pi, and the negative to GND.
+- Connect the data-in lead to the pin defined in `setup/config.json`
+## Software setup
+- Install and set up Raspbian (Raspberry Pi OS) using the [instructions on the RaspberryPi website ](https://www.raspberrypi.com/software/). 
+- Install NodeJS: `sudo apt-get install node`
+- Optionally, install the GitHub CLI: `sudo apt-get install gh`
+- Clone this repository (`gh repo clone bean-frog/pi-neopixel-v2`), or download and unzip with the green button at the top of the repo
+- From the project root (`cd pi-neopixel-v2`), install dependencies with `npm install` 
+- Start the program with `sudo node index.js`. On the Raspberry Pi, the GPIO pins are protected, and thus the program needs to be run with root permissions (`sudo`)
+- If you want the program to run every time the Pi is powered on and connected to a network, you can use a systemd service.
+- Create and open a service file: `sudo touch /etc/systemd/system`, and add the following contents using your preferred text editor.
+- make sure to replace /path/to/ with the actual path to the pi-neopixel-v2 directory.
 ```
 [Unit]
 Description=pi-neopixel-v2
