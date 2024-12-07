@@ -1,4 +1,6 @@
 # pi-neopixel-2
+#### Video Demo: 
+#### Description:
 A Raspberry Pi based NeoPixel controller 
 
 ## Explanation
@@ -35,6 +37,7 @@ The server is accessible from any device on the same network, and the local IP o
 
 ## Hardware setup
 - Connect the positive lead to one of the 5v pins on the Pi, and the negative to GND.
+- It is recommended, but not required, to use a diode (i.e. IN4001) on the 5v lead and a 300-500ohm resistor on the data-in lead.
 - Connect the data-in lead to the pin defined in `setup/config.json`
 ## Software setup
 - Install and set up Raspbian (Raspberry Pi OS) using the [instructions on the RaspberryPi website ](https://www.raspberrypi.com/software/). 
